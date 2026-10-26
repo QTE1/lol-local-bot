@@ -1,0 +1,22 @@
+name: Fetch game file
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download index.html
+        run: |
+          curl -L --fail --retry 3 -o index.html "https://muse.ai/files/1246616858542259/2575759636273797/24x0va5mpke6c0tq2fbb7yl4/index.html"
+          ls -lh index.html
+          test $(stat -c%s index.html) -eq 84759047
+      - name: Commit index.html
+        run: |
+          git config user.name "QTE1"
+          git config user.email "268386482+QTE1@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add index.html (LoL local bot v5.3, 81MB)" || echo "nothing to commit"
+          git push
